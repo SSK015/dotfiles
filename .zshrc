@@ -73,24 +73,24 @@ export TERM=xterm-256color
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git z zsh-autosuggestions zsh-syntax-highlighting web-search autojump copyfile copypath thefuck
+# autojump thefuck
+plugins=(git z zsh-autosuggestions zsh-syntax-highlighting web-search copyfile copypath
 zsh-history-substring-search
-zsh-completions
-zsh-autosuggestions zsh-you-should-use)
+zsh-completions zsh-you-should-use)
 
 source $ZSH/oh-my-zsh.sh
 # sudo wg-quick up wg0
 # source ~./.alias
-source /home/luotianyi/.alias
-eval $(thefuck --alias)
+# source /home/luotianyi/.alias
+# eval $(thefuck --alias)
 # export http_proxy=127.0.0.1:8889
 # export https_proxy=127.0.0.1:8889
 
-export http_proxy=127.0.0.1:7899
-export https_proxy=127.0.0.1:7899
+# export http_proxy=127.0.0.1:7899
+# export https_proxy=127.0.0.1:7899
 
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source ~/.zsh/catppuccin_frappe-zsh-syntax-highlighting.zsh
+# source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source ~/.zsh/catppuccin_frappe-zsh-syntax-highlighting.zsh
 
 
 export ZSH_COLORIZE_TOOL=chroma
