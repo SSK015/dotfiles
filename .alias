@@ -1,0 +1,16 @@
+alias his="history | grep"
+
+alias ccmp="g++ -std=c++11 -o" 
+alias mk="make"
+alias mk32="make -j32"
+alias mk8="make -j32"
+alias cmk="cmake .."
+alias home="cd --"
+
+# alias wgup="sudo wg-quick up wg0"
+alias wgup="echo \"158273Hh\" | sudo -S wg-quick up wg0"
+alias pswd="echo \"158273Hh\" | sudo -S "
+alias update="pswd pacman -Syu --noconfirm"
+
+alias weather='curl wttr.in/wuhan'
+alias netest="curl -i www.google.com"

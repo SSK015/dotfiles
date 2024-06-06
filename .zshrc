@@ -80,7 +80,7 @@ zsh-completions zsh-you-should-use)
 
 source $ZSH/oh-my-zsh.sh
 # sudo wg-quick up wg0
-# source ~./.alias
+source ~./.alias
 # source /home/luotianyi/.alias
 # eval $(thefuck --alias)
 # export http_proxy=127.0.0.1:8889
