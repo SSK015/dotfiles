@@ -1,5 +1,6 @@
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
+cp .alias ~/.alias
 cp .zshrc ~/.zshrc
 
 cd ~/.oh-my-zsh/plugins
