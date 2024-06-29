@@ -75,12 +75,12 @@ export TERM=xterm-256color
 # Add wisely, as too many plugins slow down shell startup.
 # autojump thefuck
 plugins=(git z zsh-autosuggestions zsh-syntax-highlighting web-search copyfile copypath
-zsh-history-substring-search
-zsh-completions zsh-you-should-use)
+    zsh-history-substring-search
+    zsh-completions zsh-you-should-use)
 
 source $ZSH/oh-my-zsh.sh
 # sudo wg-quick up wg0
-source ~./.alias
+source ~/.alias
 # source /home/luotianyi/.alias
 # eval $(thefuck --alias)
 # export http_proxy=127.0.0.1:8889
@@ -92,7 +92,6 @@ source ~./.alias
 # source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # source ~/.zsh/catppuccin_frappe-zsh-syntax-highlighting.zsh
 
-
 export ZSH_COLORIZE_TOOL=chroma
 export ZSH_COLORIZE_CHROMA_FORMATTER=terminal256
 # source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -100,7 +99,6 @@ export FZF_DEFAULT_OPTS=" \
 --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
 --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
-
 
 # User configuration
 # PS1='%n@%m:%~ $(date "+%Y-%m-%d %H:%M:%S")$ '
