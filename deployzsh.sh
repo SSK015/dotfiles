@@ -1,4 +1,8 @@
+#!/bin/bash
+
 # sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+rm -rf ~/.zshrc
+rm -rf ~/.alias
 
 cp .alias ~/.alias
 cp .zshrc ~/.zshrc
@@ -13,6 +17,7 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
 git clone https://github.com/zsh-users/zsh-autosuggestions.git
 
 mkdir ~/.zsh
+cd ~/.zsh
 git clone https://github.com/catppuccin/zsh-syntax-highlighting.git
 cd zsh-syntax-highlighting/themes/
 cp -v catppuccin_mocha-zsh-syntax-highlighting.zsh ~/.zsh/
