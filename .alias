@@ -1,9 +1,14 @@
 alias his="history | grep"
 
-alias ccmp="g++ -std=c++11 -o" 
+alias cxxcomp="g++ -std=c++11 -o"
+alias ccomp="gcc -o"
 alias mk="make"
+alias mkj="make -j"
 alias mk32="make -j32"
 alias mk8="make -j32"
+alias mka="make all"
+alias mka8="make all -j8"
+
 alias cmk="cmake .."
 alias home="cd --"
 
@@ -12,5 +17,10 @@ alias wgup="echo \"158273Hh\" | sudo -S wg-quick up wg0"
 alias pswd="echo \"158273Hh\" | sudo -S "
 alias update="pswd pacman -Syu --noconfirm"
 
-alias weather='curl wttr.in/wuhan'
+alias whweather='curl wttr.in/wuhan'
 alias netest="curl -i www.google.com"
+alias baidutest="curl -i www.baidu.com"
+alias bjweather='curl wttr.in/beijing'
+
+alias sai="sudo apt install"
+alias sau="sudo apt update"
