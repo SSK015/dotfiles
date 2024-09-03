@@ -1,5 +1,8 @@
 alias his="history | grep"
 
+alias ..2="../../"
+
+
 alias cxxcomp="g++ -std=c++11 -o"
 alias ccomp="gcc -o"
 alias mk="make"
