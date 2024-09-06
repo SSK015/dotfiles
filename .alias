@@ -68,6 +68,16 @@ dirfind() {
     # find /usr -name 'libboost_program_options*'
     find $1 -name $2
 }
+
+strgrep() {
+    if [ -z "$1" ] || [ -z "$2" ]; then
+        echo "Usage: strgrep <lib_path> <key_word>"
+        return 1
+    fi
+    strings $1 | grep $2
+    # strings /usr/local/lib/libboost_program_options.so.1.71.0 | grep GCC
+}
+
 # catgrep() {
 #     if [ -z "$1" ] || [ -z "$2" ]; then
 #         echo "Usage: catgrep <file_path> <key_word>"
