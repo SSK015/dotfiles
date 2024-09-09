@@ -64,7 +64,7 @@ zcatgrep() {
     zcat $1 | grep $2 -C $3
 }
 
-dirfind() {
+filefind() {
     if [ -z "$1" ] || [ -z "$2" ]; then
         echo "Usage: dirfind <dir_path> <key_word>"
         return 1
@@ -80,6 +80,18 @@ strgrep() {
     fi
     strings $1 | grep $2
     # strings /usr/local/lib/libboost_program_options.so.1.71.0 | grep GCC
+}
+
+gengrep() {
+    if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+        echo "Usage: gengrep <command> <file_path> <key_word> <neighbor_lines(optional, default=0)>"
+        return 1
+    fi
+    if [ -z "$4" ]; then
+        $1 $2 | grep $3 -C 0
+    else
+        $1 $2 | grep $3 -C $4
+    fi
 }
 
 gclb() {
