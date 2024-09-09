@@ -33,6 +33,10 @@ alias bjweather='curl wttr.in/beijing'
 alias sai="sudo apt install"
 alias sau="sudo apt update"
 
+alias py3="python3"
+alias py="python"
+alias p3i="pip3 install"
+
 myalias() {
     echo "The first parameter is $1"
     echo "The second parameter is $2"
@@ -78,6 +82,29 @@ strgrep() {
     # strings /usr/local/lib/libboost_program_options.so.1.71.0 | grep GCC
 }
 
+gclb() {
+    if [ -z "$1" ]; then
+        echo "Usage: gclb <git_url> <branch_name>"
+        return 1
+    fi
+    if [ -z "$2" ]; then
+        git clone $1
+    else
+        git clone $1 -b $2 $3
+    fi
+}
+
+gclrb() {
+    if [ -z "$1" ]; then
+        echo "Usage: gclb <git_url> <branch_name>"
+        return 1
+    fi
+    if [ -z "$2" ]; then
+        git clone --recurse-submodules $1
+    else
+        git clone $1 --recurse-submodules -b $2 $3
+    fi
+}
 # catgrep() {
 #     if [ -z "$1" ] || [ -z "$2" ]; then
 #         echo "Usage: catgrep <file_path> <key_word>"
