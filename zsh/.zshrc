@@ -135,3 +135,9 @@ export FZF_DEFAULT_OPTS=" \
 # unset TMUX
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+if command -v neofetch >/dev/null 2>&1; then
+    neofetch
+else
+    echo "neofetch is not installed. Please install it first."
+fi
