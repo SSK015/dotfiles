@@ -7,6 +7,9 @@ rm -rf ~/.alias
 cp .alias ~/.alias
 cp .zshrc ~/.zshrc
 
+mkdir -p ~/.zsh
+cp -v catppuccin_mocha-zsh-syntax-highlighting.zsh ~/.zsh/
+
 cd ~/.oh-my-zsh/plugins
 
 git clone https://github.com/zsh-users/zsh-completions
@@ -17,11 +20,9 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
 git clone https://github.com/zsh-users/zsh-autosuggestions.git
 git clone https://github.com/paulirish/git-open.git
 
-mkdir -p ~/.zsh
-cd ~/.zsh
-git clone https://github.com/catppuccin/zsh-syntax-highlighting.git
-cd zsh-syntax-highlighting/themes/
-cp -v catppuccin_mocha-zsh-syntax-highlighting.zsh ~/.zsh/
+# cd ~/.zsh
+# git clone https://github.com/catppuccin/zsh-syntax-highlighting.git
+# cd zsh-syntax-highlighting/themes/
 
 pip3 install thefuck
 sudo apt install autojump

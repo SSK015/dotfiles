@@ -90,7 +90,8 @@ source ~/.alias
 # export https_proxy=127.0.0.1:7899
 
 # source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# source ~/.zsh/catppuccin_frappe-zsh-syntax-highlighting.zsh
+source ~/.zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
+
 
 export ZSH_COLORIZE_TOOL=chroma
 export ZSH_COLORIZE_CHROMA_FORMATTER=terminal256
