@@ -75,8 +75,8 @@ export TERM=xterm-256color
 # Add wisely, as too many plugins slow down shell startup.
 # autojump thefuck
 plugins=(git z zsh-autosuggestions zsh-syntax-highlighting web-search copyfile copypath
-    zsh-history-substring-search
-    zsh-completions zsh-you-should-use)
+    zsh-history-substring-search extract command-not-found tmux rand-quote
+    zsh-completions zsh-you-should-use autojump git-open colored-man-pages)
 
 source $ZSH/oh-my-zsh.sh
 # sudo wg-quick up wg0
