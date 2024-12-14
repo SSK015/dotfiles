@@ -6,6 +6,7 @@ rm -rf ~/.alias
 
 cp .alias ~/.alias
 cp .zshrc ~/.zshrc
+cp ascii_art.txt ~
 
 mkdir -p ~/.zsh
 cp -v catppuccin_mocha-zsh-syntax-highlighting.zsh ~/.zsh/

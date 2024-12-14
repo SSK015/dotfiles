@@ -90,8 +90,7 @@ source ~/.alias
 # export https_proxy=127.0.0.1:7899
 
 # source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source ~/.zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
-
+# source ~/.zsh/catppuccin_mocha-zsh-syntax-highlighting.zsh
 
 export ZSH_COLORIZE_TOOL=chroma
 export ZSH_COLORIZE_CHROMA_FORMATTER=terminal256
@@ -142,3 +141,5 @@ if command -v neofetch >/dev/null 2>&1; then
 else
     echo "neofetch is not installed. Please install it first."
 fi
+
+echo -e "\033[34m$(cat ascii_art.txt)\033[0m"
