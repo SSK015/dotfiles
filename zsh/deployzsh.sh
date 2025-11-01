@@ -20,6 +20,7 @@ git clone https://github.com/MichaelAquilina/zsh-you-should-use.git
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
 git clone https://github.com/zsh-users/zsh-autosuggestions.git
 git clone https://github.com/paulirish/git-open.git
+git clone https://github.com/joshskidmore/zsh-fzf-history-search ~/.oh-my-zsh/custom/plugins/zsh-fzf-history-search
 
 # cd ~/.zsh
 # git clone https://github.com/catppuccin/zsh-syntax-highlighting.git

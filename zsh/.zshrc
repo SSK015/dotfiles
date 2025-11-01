@@ -76,7 +76,7 @@ export TERM=xterm-256color
 # autojump thefuck
 plugins=(git z zsh-autosuggestions zsh-syntax-highlighting web-search copyfile copypath
     zsh-history-substring-search extract command-not-found tmux rand-quote
-    zsh-completions zsh-you-should-use autojump git-open colored-man-pages)
+    zsh-completions zsh-you-should-use autojump git-open colored-man-pages zsh-fzf-history-search)
 
 source $ZSH/oh-my-zsh.sh
 # sudo wg-quick up wg0
@@ -143,3 +143,8 @@ else
 fi
 
 echo -e "\033[34m$(cat ~/ascii_art.txt)\033[0m"
+
+reload_vscode_ipc() {
+    export VSCODE_IPC_HOOK_CLI=$(ls -tr /run/user/$(id -u)/vscode-ipc-* 2>/dev/null | tail -n 1)
+}
+reload_vscode_ipc
