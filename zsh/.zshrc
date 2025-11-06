@@ -20,7 +20,6 @@ source ~/.alias
 # eval $(thefuck --alias)
 # export http_proxy=127.0.0.1:8889
 # export https_proxy=127.0.0.1:8889
-
 # export http_proxy=127.0.0.1:7899
 # export https_proxy=127.0.0.1:7899
 
