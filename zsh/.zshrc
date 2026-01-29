@@ -114,7 +114,7 @@ else
     echo "neofetch is not installed. Please install it first."
 fi
 
-echo -e "\033[34m$(cat ~/ascii_art.txt)\033[0m"
+echo -e "\033[34m$(cat ~/ii_art.txt)\033[0m"
 
 reload_vscode_ipc() {
     export VSCODE_IPC_HOOK_CLI=$(ls -tr /run/user/$(id -u)/vscode-ipc-* 2>/dev/null | tail -n 1)
