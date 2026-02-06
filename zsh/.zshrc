@@ -84,18 +84,18 @@ fzf_history_light_widget() {
     fi
   fi
 
-  # fc fields with -i: <event> <yyyy-mm-dd> <hh:mm> <command...>
+  # NOTE: `fc -i` timestamp fields are not guaranteed (depends on history options).
+  # So we *strip* "<event> [date time]" before feeding into fzf, otherwise a fixed
+  # `--nth=4..` will accidentally drop the beginning of short commands like `build...`.
   selected="$(
-    fc -rl -i 1 | fzf ${=FZF_DEFAULT_OPTS} \
+    fc -rl -i 1 2>/dev/null \
+      | sed -E 's/^[[:space:]]*[0-9]+\\**[[:space:]]+//; s/^[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]]+[0-9]{2}:[0-9]{2}(:[0-9]{2})?[[:space:]]+//' \
+      | fzf ${=FZF_DEFAULT_OPTS} \
       --height=40% --layout=reverse --border \
       --prompt='history> ' \
       --query "$LBUFFER" \
-      --with-nth=4.. --nth=4.. \
       --tiebreak=index
   )" || return
-
-  # Strip: event number + date + time (keep the rest intact)
-  selected="$(print -r -- "$selected" | sed -E 's/^[[:space:]]*[0-9]+[[:space:]]+[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]]+[0-9]{2}:[0-9]{2}[[:space:]]+//')"
 
   LBUFFER="$selected"
   zle redisplay
