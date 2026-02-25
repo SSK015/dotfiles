@@ -36,6 +36,7 @@ source ~/.alias
 source ~/.zsh/catppuccin_latte-zsh-syntax-highlighting.zsh
 source $ZSH/oh-my-zsh.sh
 source ~/.alias
+source ~/.zfunctions
 
 ZSH_THEME_GIT_PROMPT_PREFIX=" %F{238}on%f %F{18}git:%F{24}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%f"

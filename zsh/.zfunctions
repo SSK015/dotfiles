@@ -1,0 +1,46 @@
+# Optional: keep znt history available on another key (uncomment if you want)
+# (( $+widgets[znt-history-widget] )) && bindkey '^G' znt-history-widget
+
+# Some plugins/rc fragments may define `ask` as an alias (including global alias),
+# which breaks `ask()` function definitions via alias expansion.
+if (( $+aliases[ask] )); then
+  unalias ask
+fi
+if (( $+galiases[ask] )); then
+  unalias -g ask
+fi
+ask() {
+    local prompt="$*"
+    
+    if [[ -z "$prompt" ]]; then
+        echo "Usage: ask <description of command>"
+        return 1
+    fi
+    
+    echo "🤔 Generating command..."
+    
+    local system_prompt="You are a zsh shell expert. Generate ONLY the command, no explanation, no markdown, no backticks, no extra text."
+    
+    local cmd=$(llm -m openrouter/google/gemini-3-flash-preview \
+        -s "$system_prompt" \
+        "$prompt" 2>/dev/null)
+    
+    if [[ -z "$cmd" ]]; then
+        echo "❌ Failed to generate command"
+        return 1
+    fi
+    
+    cmd=$(echo "$cmd" | sed 's/^`//;s/`$//' | sed 's/^```.*//;s/```$//' | xargs)
+    
+    printf "\n💡 Suggested command:\n"
+    printf "   \033[1;32m%s\033[0m\n\n" "$cmd"
+    
+    print -s "$cmd"
+
+    # If invoked as a ZLE widget, populate the editing buffer.
+    # If invoked from a normal prompt/script, just print the suggestion.
+    if [[ -n ${ZLE-} ]]; then
+        BUFFER="$cmd"
+        zle reset-prompt
+    fi
+}
