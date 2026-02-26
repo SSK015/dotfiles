@@ -51,4 +51,8 @@ fi
 # cd zsh-syntax-highlighting/themes/
 
 pip3 install thefuck
+pip3 install llm 
+pip3 install llm-openrouter
+# change to your provider here.
+# llm keys set openrouter
 sudo apt install autojump
