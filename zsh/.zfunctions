@@ -1,5 +1,209 @@
-# Optional: keep znt history available on another key (uncomment if you want)
-# (( $+widgets[znt-history-widget] )) && bindkey '^G' znt-history-widget
+# fzf helpers: open file / cd dir / kill process
+if [[ -o interactive ]] && command -v fzf >/dev/null 2>&1; then
+  # Avoid fullscreen/alternate-screen rendering issues in some terminals (e.g. IDE terminals)
+  # by forcing a "dropdown" fzf UI.
+  local -a _fzf_dropdown_ui
+  if [[ -n "${ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS:-}" ]]; then
+    _fzf_dropdown_ui=(${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS})
+  else
+    _fzf_dropdown_ui=(--height=40% --layout=reverse --border)
+  fi
+  # Preview panes cause heavy redraw/flicker in some IDE terminals.
+  # Default to preview *disabled*, allow toggling with Ctrl-P if needed.
+  local -a _fzf_no_preview _fzf_preview_toggle
+  _fzf_no_preview=(--preview-window=hidden)
+  _fzf_preview_toggle=(--bind='ctrl-p:toggle-preview')
+
+  ff() {
+    emulate -L zsh
+    setopt pipefail
+
+    local -a files
+    local editor="${EDITOR:-vim}"
+    local fd_cmd
+    if whence -p fd >/dev/null 2>&1; then
+      fd_cmd="fd"
+    elif whence -p fdfind >/dev/null 2>&1; then
+      fd_cmd="fdfind"
+    fi
+
+    if [[ -n "$fd_cmd" ]]; then
+      files=("${(@f)$(
+        $fd_cmd --type f --hidden --follow --exclude .git 2>/dev/null \
+          | fzf -m "${_fzf_dropdown_ui[@]}" "${_fzf_no_preview[@]}" "${_fzf_preview_toggle[@]}" \
+              --prompt='file> ' \
+              --preview='command -v bat >/dev/null 2>&1 && bat --style=numbers --color=always --line-range :200 "{}" 2>/dev/null || sed -n "1,200p" "{}" 2>/dev/null'
+      )}") || return
+    else
+      files=("${(@f)$(
+        find . -type f -not -path '*/.git/*' 2>/dev/null \
+          | sed 's|^\./||' \
+          | fzf -m "${_fzf_dropdown_ui[@]}" "${_fzf_no_preview[@]}" "${_fzf_preview_toggle[@]}" \
+              --prompt='file> ' \
+              --preview='command -v bat >/dev/null 2>&1 && bat --style=numbers --color=always --line-range :200 "{}" 2>/dev/null || sed -n "1,200p" "{}" 2>/dev/null'
+      )}") || return
+    fi
+
+    (( ${#files} )) || return
+    if command -v vsc >/dev/null 2>&1; then
+      vsc "${files[@]}"
+    else
+      "$editor" "${files[@]}"
+    fi
+  }
+
+  fcd() {
+    emulate -L zsh
+    setopt pipefail
+
+    local dir
+    local fd_cmd
+    if whence -p fd >/dev/null 2>&1; then
+      fd_cmd="fd"
+    elif whence -p fdfind >/dev/null 2>&1; then
+      fd_cmd="fdfind"
+    fi
+
+    if [[ -n "$fd_cmd" ]]; then
+      dir="$(
+        $fd_cmd --type d --hidden --follow --exclude .git 2>/dev/null \
+          | fzf "${_fzf_dropdown_ui[@]}" "${_fzf_no_preview[@]}" "${_fzf_preview_toggle[@]}" \
+              --prompt='dir> ' --preview='ls -la "{}" 2>/dev/null'
+      )" || return
+    else
+      dir="$(
+        find . -type d -not -path '*/.git/*' 2>/dev/null \
+          | sed 's|^\./||' \
+          | fzf "${_fzf_dropdown_ui[@]}" "${_fzf_no_preview[@]}" "${_fzf_preview_toggle[@]}" \
+              --prompt='dir> ' --preview='ls -la "{}" 2>/dev/null'
+      )" || return
+    fi
+
+    [[ -n "$dir" ]] || return
+    builtin cd -- "$dir"
+  }
+
+  # Only alias `fd` -> `fcd` when the `fd` binary is absent.
+  if ! whence -p fd >/dev/null 2>&1 && ! whence -p fdfind >/dev/null 2>&1; then
+    alias fd='fcd'
+  fi
+
+  fp() {
+    emulate -L zsh
+    setopt pipefail
+
+    local sig="TERM"
+    if [[ "${1:-}" == -* && "${#1}" -gt 1 ]]; then
+      sig="${1#-}"
+      shift
+    fi
+
+    local -a lines pids
+    lines=("${(@f)$(
+      ps -eo pid,ppid,stat,%cpu,%mem,etime,cmd --sort=-%cpu 2>/dev/null \
+        | fzf -m "${_fzf_dropdown_ui[@]}" "${_fzf_no_preview[@]}" "${_fzf_preview_toggle[@]}" \
+            --header-lines=1 --prompt='proc> ' --preview='echo "{}"'
+    )}") || return
+
+    (( ${#lines} )) || return
+    local line
+    for line in "${lines[@]}"; do
+      pids+=("${${(z)line}[1]}")
+    done
+
+    (( ${#pids} )) || return
+    kill -s "$sig" -- "${pids[@]}"
+  }
+
+  # fbr - checkout git branch (including remote branches)
+  fbr() {
+    local branches branch
+    branches=$(git branch --all | grep -v HEAD) || return
+    branch=$(echo "$branches" |
+             fzf-tmux -d $(( 2 + $(echo "$branches" | wc -l) )) "${_fzf_dropdown_ui[@]}" +m) || return
+    git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+  }
+
+  # fshow - git commit browser
+  fshow() {
+    git log --graph --color=always \
+        --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+    fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
+        --bind "ctrl-m:execute:
+                  (grep -o '[a-f0-9]\{7\}' | head -1 |
+                  xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+                  {}
+FZF-EOF"
+  }
+
+  # fcs - get git commit sha
+  # example usage: git rebase -i `fcs`
+  fcs() {
+    local commits commit
+    commits=$(git log --color=always --pretty=oneline --abbrev-commit --reverse) &&
+    commit=$(echo "$commits" | fzf --tac +s +m -e --ansi --reverse) &&
+    echo "$commit" | sed "s/ .*//"
+  }
+
+  # fssh - ssh into host
+  fssh() {
+    local host
+    host=$(grep -P '^Host [^*]+$' ~/.ssh/config | awk '{print $2}' | fzf "${_fzf_dropdown_ui[@]}")
+    if [ -n "$host" ]; then
+      ssh "$host"
+    fi
+  }
+
+  # fenv - environment variable browser
+  fenv() {
+    local out
+    out=$(env | fzf "${_fzf_dropdown_ui[@]}")
+    echo $(echo "$out" | cut -d= -f2-)
+  }
+
+  # falias - alias browser
+  falias() {
+    local out
+    out=$(alias | fzf "${_fzf_dropdown_ui[@]}")
+    echo $(echo "$out" | cut -d= -f2-)
+  }
+fi
+
+# Ctrl-R: force fzf-based history UI (light theme via FZF_DEFAULT_OPTS).
+# zsh-navigation-tools binds ^R to znt-history-widget, which ignores fzf colors.
+fzf_history_light_widget() {
+  # Show history with timestamps, but only paste the actual command into the prompt.
+  local selected
+
+  # Some terminals (or integrations) can end up with COLUMNS/LINES as 0,
+  # which makes fzf's screen rendering go haywire. Self-heal from stty.
+  if [[ "${COLUMNS:-0}" -le 0 || "${LINES:-0}" -le 0 ]]; then
+    local _stty
+    _stty=(${(s: :)$(stty size 2>/dev/null)})
+    if [[ ${#_stty} -eq 2 && "${_stty[1]:-0}" -gt 0 && "${_stty[2]:-0}" -gt 0 ]]; then
+      export LINES="${_stty[1]}"
+      export COLUMNS="${_stty[2]}"
+    fi
+  fi
+
+  # NOTE: `fc -i` timestamp fields are not guaranteed (depends on history options).
+  # So we *strip* "<event> [date time]" before feeding into fzf, otherwise a fixed
+  # `--nth=4..` will accidentally drop the beginning of short commands like `build...`.
+  selected="$(
+    fc -rl -i 1 2>/dev/null \
+      | sed -E 's/^[[:space:]]*[0-9]+\\**[[:space:]]+//; s/^[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]]+[0-9]{2}:[0-9]{2}(:[0-9]{2})?[[:space:]]+//' \
+      | fzf ${=FZF_DEFAULT_OPTS} \
+      --height=40% --layout=reverse --border \
+      --prompt='history> ' \
+      --query "$LBUFFER" \
+      --tiebreak=index
+  )" || return
+
+  LBUFFER="$selected"
+  zle redisplay
+}
+zle -N fzf_history_light_widget
+bindkey '^R' fzf_history_light_widget
 
 # Some plugins/rc fragments may define `ask` as an alias (including global alias),
 # which breaks `ask()` function definitions via alias expansion.
