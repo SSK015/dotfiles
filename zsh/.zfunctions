@@ -18,64 +18,66 @@ if [[ -o interactive ]] && command -v fzf >/dev/null 2>&1; then
     emulate -L zsh
     setopt pipefail
 
+    local search_dir="${1:-.}"
     local -a files
-    local editor="${EDITOR:-vim}"
-    local fd_cmd
-    if whence -p fd >/dev/null 2>&1; then
-      fd_cmd="fd"
-    elif whence -p fdfind >/dev/null 2>&1; then
-      fd_cmd="fdfind"
+    local editor="vim"
+    
+    # 1. 检测是否在 VSCode 终端中
+    if [[ -n "$VSCODE_IPC_HOOK_CLI" || "$TERM_PROGRAM" == "vscode" ]]; then
+      # 如果在 VSCode 中，优先尝试使用 vsc 函数或 code 命令
+      if whence -f vsc >/dev/null 2>&1; then
+        editor="vsc"
+      elif command -v code >/dev/null 2>&1; then
+        editor="code"
+      fi
+    else
+      # 如果不在 VSCode 中，优先使用 nvim，其次是 vim
+      if command -v nvim >/dev/null 2>&1; then
+        editor="nvim"
+      elif command -v vim >/dev/null 2>&1; then
+        editor="vim"
+      fi
     fi
 
-    if [[ -n "$fd_cmd" ]]; then
+    local real_fd
+    real_fd=$(whence -p fd || whence -p fdfind)
+
+    if [[ -n "$real_fd" ]]; then
       files=("${(@f)$(
-        $fd_cmd --type f --hidden --follow --exclude .git 2>/dev/null \
-          | fzf -m "${_fzf_dropdown_ui[@]}" "${_fzf_no_preview[@]}" "${_fzf_preview_toggle[@]}" \
-              --prompt='file> ' \
-              --preview='command -v bat >/dev/null 2>&1 && bat --style=numbers --color=always --line-range :200 "{}" 2>/dev/null || sed -n "1,200p" "{}" 2>/dev/null'
+        $real_fd --type f --hidden --follow --exclude .git . "$search_dir" 2>/dev/null \
+          | fzf -m --reverse --prompt="file ($search_dir)> " \
+              --preview='[[ -f {} ]] && (command -v bat >/dev/null 2>&1 && bat --style=numbers --color=always --line-range :200 {} 2>/dev/null || head -n 200 {})'
       )}") || return
     else
       files=("${(@f)$(
-        find . -type f -not -path '*/.git/*' 2>/dev/null \
-          | sed 's|^\./||' \
-          | fzf -m "${_fzf_dropdown_ui[@]}" "${_fzf_no_preview[@]}" "${_fzf_preview_toggle[@]}" \
-              --prompt='file> ' \
-              --preview='command -v bat >/dev/null 2>&1 && bat --style=numbers --color=always --line-range :200 "{}" 2>/dev/null || sed -n "1,200p" "{}" 2>/dev/null'
+        command find "$search_dir" -type f -not -path '*/.git/*' 2>/dev/null \
+          | fzf -m --reverse --prompt="file ($search_dir)> " \
+              --preview='[[ -f {} ]] && (command -v bat >/dev/null 2>&1 && bat --style=numbers --color=always --line-range :200 {} 2>/dev/null || head -n 200 {})'
       )}") || return
     fi
 
     (( ${#files} )) || return
-    if command -v vsc >/dev/null 2>&1; then
-      vsc "${files[@]}"
-    else
-      "$editor" "${files[@]}"
-    fi
+    $editor "${files[@]}"
   }
 
   fcd() {
     emulate -L zsh
     setopt pipefail
 
+    local search_dir="${1:-.}"
     local dir
-    local fd_cmd
-    if whence -p fd >/dev/null 2>&1; then
-      fd_cmd="fd"
-    elif whence -p fdfind >/dev/null 2>&1; then
-      fd_cmd="fdfind"
-    fi
+    local real_fd
+    real_fd=$(whence -p fd || whence -p fdfind)
 
-    if [[ -n "$fd_cmd" ]]; then
+    if [[ -n "$real_fd" ]]; then
       dir="$(
-        $fd_cmd --type d --hidden --follow --exclude .git 2>/dev/null \
-          | fzf "${_fzf_dropdown_ui[@]}" "${_fzf_no_preview[@]}" "${_fzf_preview_toggle[@]}" \
-              --prompt='dir> ' --preview='ls -la "{}" 2>/dev/null'
+        $real_fd --type d --hidden --follow --exclude .git . "$search_dir" 2>/dev/null \
+          | fzf --reverse --prompt="dir ($search_dir)> " --preview='ls -p --color=always {} 2>/dev/null'
       )" || return
     else
       dir="$(
-        find . -type d -not -path '*/.git/*' 2>/dev/null \
-          | sed 's|^\./||' \
-          | fzf "${_fzf_dropdown_ui[@]}" "${_fzf_no_preview[@]}" "${_fzf_preview_toggle[@]}" \
-              --prompt='dir> ' --preview='ls -la "{}" 2>/dev/null'
+        command find "$search_dir" -type d -not -path '*/.git/*' 2>/dev/null \
+          | fzf --reverse --prompt="dir ($search_dir)> " --preview='ls -p --color=always {} 2>/dev/null'
       )" || return
     fi
 
@@ -86,6 +88,8 @@ if [[ -o interactive ]] && command -v fzf >/dev/null 2>&1; then
   # Only alias `fd` -> `fcd` when the `fd` binary is absent.
   if ! whence -p fd >/dev/null 2>&1 && ! whence -p fdfind >/dev/null 2>&1; then
     alias fd='fcd'
+  else
+    unalias fd 2>/dev/null
   fi
 
   fp() {
