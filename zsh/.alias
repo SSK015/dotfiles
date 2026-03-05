@@ -21,9 +21,6 @@ alias mka8="make all -j8"
 alias cmk="cmake .."
 
 # alias wgup="sudo wg-quick up wg0"
-alias wgup="echo \"158273Hh\" | sudo -S wg-quick up wg0"
-alias pswd="echo \"158273Hh\" | sudo -S "
-alias update="pswd pacman -Syu --noconfirm"
 
 alias whweather='curl wttr.in/wuhan'
 alias netest="curl -i www.google.com"
@@ -55,6 +52,23 @@ fi
 # lazygit: Terminal UI for git
 if command -v lazygit >/dev/null 2>&1; then
     alias lg="lazygit"
+fi
+
+# bat: A modern replacement for 'cat'
+if command -v bat >/dev/null 2>&1; then
+    alias cat="bat"
+elif command -v batcat >/dev/null 2>&1; then
+    alias cat="batcat"
+fi
+
+# ripgrep: A modern replacement for 'grep'
+if command -v rg >/dev/null 2>&1; then
+    alias grep="rg"
+fi
+
+# dust: A modern replacement for 'du'
+if command -v dust >/dev/null 2>&1; then
+    alias du="dust"
 fi
 # --------------------------------
 

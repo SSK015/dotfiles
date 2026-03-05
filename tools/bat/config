@@ -1,0 +1,20 @@
+# --- bat configuration ---
+
+# Set the theme to "Monokai Extended" (or choose another from 'bat --list-themes')
+--theme="Monokai Extended"
+
+# Show line numbers, Git modifications, and file header
+--style="numbers,changes,header"
+
+# Use italic text in the output
+--italic-text=always
+
+# Use "less" as the pager, with mouse support and raw control characters
+--pager="less --RAW-CONTROL-CHARS --quit-if-one-screen --mouse"
+
+# Map certain file extensions to specific syntaxes
+--map-syntax "*.jenkinsfile:Groovy"
+--map-syntax "*.props:Java Properties"
+
+# Wrap long lines
+--wrap=never
