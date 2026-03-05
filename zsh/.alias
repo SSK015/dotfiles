@@ -37,6 +37,27 @@ alias py3="python3"
 alias py="python"
 alias p3i="pip3 install"
 
+# --- Modern CLI Tools Aliases ---
+# eza: A modern replacement for 'ls'
+if command -v eza >/dev/null 2>&1; then
+    alias ls="eza --icons --group-directories-first"
+    alias ll="eza -lbF --icons --group-directories-first"
+    alias la="eza -labF --icons --group-directories-first"
+    alias lt="eza --tree --level=2 --icons"
+fi
+
+# zoxide: A smarter 'cd' command
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init zsh)"
+    alias cd="z"
+fi
+
+# lazygit: Terminal UI for git
+if command -v lazygit >/dev/null 2>&1; then
+    alias lg="lazygit"
+fi
+# --------------------------------
+
 myalias() {
     echo "The first parameter is $1"
     echo "The second parameter is $2"
