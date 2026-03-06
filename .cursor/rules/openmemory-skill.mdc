@@ -1,0 +1,16 @@
+---
+description: Always-on skill to synchronize and persist agent context using OpenMemory.
+globs: **/*
+alwaysApply: true
+---
+
+# Skill: OpenMemory Synchronization
+
+1. Initialization:
+   - Call `recall_memory_abstract` and `get_recent_memories` at task start.
+2. Continuous synchronization:
+   - Call `save_memory` after significant findings or decisions.
+3. Maintenance:
+   - Call `update_memory_abstract` at major milestones.
+4. Completion:
+   - On `DONE`, write a final memory entry and refresh abstract.

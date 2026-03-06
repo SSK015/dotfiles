@@ -1,0 +1,12 @@
+---
+description: Always-on rule to preserve debug/development experience.
+globs: **/*
+alwaysApply: true
+---
+
+# Experience Capture and Reuse
+
+1. Read `.cursor/knowledge/debug_dev_experience.md` before substantial tasks.
+2. Persist key findings with `save_memory`.
+3. On major milestones, update abstract memory.
+4. Keep `workflow_state.md` logs concise and factual for auto-capture quality.

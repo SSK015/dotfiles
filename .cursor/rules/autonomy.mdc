@@ -1,0 +1,8 @@
+# Autonomy Rules
+
+- Continuous loop: do not pause while there are pending execution steps.
+- Stop only when: requirement ambiguity, destructive operation without approval, or task is verified complete.
+- Run reproduction/build/verification commands directly when needed.
+- If verification fails, continue with self-correction in the same flow.
+- Update `workflow_state.md` after major actions.
+- Mark `DONE` only after fix verification and assumption checks pass.

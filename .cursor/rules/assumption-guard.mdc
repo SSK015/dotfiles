@@ -1,0 +1,21 @@
+---
+description: Always-on guardrail for architecture assumptions and invariants.
+globs: **/*
+alwaysApply: true
+---
+
+# Assumption Guard (Always On)
+
+Treat `project_config.md` as the authoritative contract.
+
+Required behavior:
+1. Read `project_config.md` before debug/code changes.
+2. Preserve hard constraints during implementation.
+3. Verify fixes do not violate assumptions.
+4. Do not mark completed unless assumption checks pass.
+
+Forbidden patterns:
+- Loosening safety thresholds as a workaround.
+- Bypassing state machine transitions.
+- Violating ownership/synchronization boundaries.
+- Masking correctness faults with fallback behavior.

@@ -1,0 +1,19 @@
+---
+description: Always-on skill routing policy for debug/development workflows.
+globs: **/*
+alwaysApply: true
+---
+
+# Skill Routing Policy
+
+Local skill catalog (example paths):
+- `.cursor/skills/awesome-skills/systematic-debugging`
+- `.cursor/skills/awesome-skills/verification-before-completion`
+- `.cursor/skills/awesome-skills/agent-memory-mcp`
+- `.cursor/skills/awesome-skills/agent-memory-systems`
+
+Routing rules:
+1. Bug/regression tasks -> apply `systematic-debugging` first.
+2. Completion claims -> apply `verification-before-completion` with fresh evidence.
+3. Long-running tasks -> apply memory skills and synchronize memories.
+4. Invariant-sensitive changes -> enforce `project_config.md` + assumption guard.
