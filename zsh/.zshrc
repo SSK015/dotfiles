@@ -120,4 +120,8 @@ echo -e "\033[34m$(cat ~/ascii_art.txt)\033[0m"
 reload_vscode_ipc() {
     export VSCODE_IPC_HOOK_CLI=$(ls -tr /run/user/$(id -u)/vscode-ipc-* 2>/dev/null | tail -n 1)
 }
-reload_vscode_ipc
+
+# if in vscode, reload the vscode-ipc-hook
+if [ -n "$VSCODE_IPC_HOOK_CLI" ]; then
+    reload_vscode_ipc
+fi
