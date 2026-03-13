@@ -21,6 +21,9 @@
       "env": {
         "PROJECT_ROOT": "${WORKSPACE_ROOT}"
       }
+    },
+    "exa": {
+      "url": "https://mcp.exa.ai/mcp?exaApiKey=82640f63-d2a2-4a53-8e3b-c54201b84bf7&tools=web_search_exa,web_search_advanced_exa,get_code_context_exa,crawling_exa,company_research_exa,people_search_exa,deep_researcher_start,deep_researcher_check"
     }
   }
 }
