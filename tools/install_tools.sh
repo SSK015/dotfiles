@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # --- Modern CLI Tools Installer ---
-# This script installs fzf, eza, zoxide, lazygit, bat, ripgrep, fd, delta, dust, and tldr on Ubuntu/Debian.
+# This script installs fzf, eza, zoxide, lazygit, bat, ripgrep, fd, dust, and tldr on Ubuntu/Debian.
 
 set -e
 
@@ -41,17 +41,18 @@ elif ! command -v fzf >/dev/null 2>&1; then
     sudo apt install -y fzf
 fi
 
-# 3. Install eza (Modern ls)
-if ! command -v eza >/dev/null 2>&1; then
-    echo "📦 Installing eza..."
-    sudo mkdir -p /etc/apt/keyrings
-    wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
-    echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
-    sudo apt update
-    sudo apt install -y eza
-else
-    echo "✅ eza is already installed."
-fi
+    # 3. Install eza (Modern ls)
+    if ! command -v eza >/dev/null 2>&1; then
+        echo "📦 Installing eza..."
+        sudo mkdir -p /etc/apt/keyrings
+        wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
+        # Added [arch=amd64] to avoid i386 errors
+        echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
+        sudo apt update
+        sudo apt install -y eza
+    else
+        echo "✅ eza is already installed."
+    fi
 
 # 4. Install zoxide (Smart cd)
 if ! command -v zoxide >/dev/null 2>&1; then
@@ -103,30 +104,20 @@ else
     echo "✅ fd is already installed."
 fi
 
-# 9. Install delta (Modern git diff)
-if ! command -v delta >/dev/null 2>&1; then
-    echo "📦 Installing delta..."
-    DELTA_VERSION=$(curl -s "https://api.github.com/repos/dandavison/delta/releases/latest" | grep -Po '"tag_name": "\K[^"]*')
-    curl -Lo delta.deb "https://github.com/dandavison/delta/releases/latest/download/git-delta_${DELTA_VERSION}_amd64.deb"
-    sudo dpkg -i delta.deb
-    rm delta.deb
-else
-    echo "✅ delta is already installed."
-fi
-
-# 10. Install dust (Modern du)
+# 9. Install dust (Modern du)
 if ! command -v dust >/dev/null 2>&1; then
     echo "📦 Installing dust..."
     DUST_VERSION=$(curl -s "https://api.github.com/repos/bootandy/dust/releases/latest" | grep -Po '"tag_name": "\K[^"]*')
-    curl -Lo dust.tar.gz "https://github.com/bootandy/dust/releases/download/${DUST_VERSION}/dust-${DUST_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+    # Use musl version to avoid libc6 version issues
+    curl -Lo dust.tar.gz "https://github.com/bootandy/dust/releases/download/${DUST_VERSION}/dust-${DUST_VERSION}-x86_64-unknown-linux-musl.tar.gz"
     tar xf dust.tar.gz
-    sudo install -m 755 "dust-${DUST_VERSION}-x86_64-unknown-linux-gnu/dust" /usr/local/bin/dust
-    rm -rf dust.tar.gz "dust-${DUST_VERSION}-x86_64-unknown-linux-gnu"
+    sudo install -m 755 "dust-${DUST_VERSION}-x86_64-unknown-linux-musl/dust" /usr/local/bin/dust
+    rm -rf dust.tar.gz "dust-${DUST_VERSION}-x86_64-unknown-linux-musl"
 else
     echo "✅ dust is already installed."
 fi
 
-# 11. Install tldr (Modern man)
+# 10. Install tldr (Modern man)
 if ! command -v tldr >/dev/null 2>&1; then
     echo "📦 Installing tldr..."
     sudo apt install -y tldr || pip3 install tldr
@@ -134,19 +125,17 @@ else
     echo "✅ tldr is already installed."
 fi
 
-# 12. Install JetBrainsMono Nerd Font (Optional but recommended)
+# 11. Install JetBrainsMono Nerd Font (Recommended)
 if [ ! -d "$HOME/.local/share/fonts/JetBrainsMonoNerd" ]; then
-    echo "❓ Do you want to install JetBrainsMono Nerd Font for better icons? (y/n)"
-    read -r install_font
-    if [[ "$install_font" =~ ^[Yy]$ ]]; then
-        echo "📦 Installing JetBrainsMono Nerd Font..."
-        mkdir -p ~/.local/share/fonts
-        wget -O /tmp/JetBrainsMono.zip https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
-        unzip -o /tmp/JetBrainsMono.zip -d ~/.local/share/fonts/JetBrainsMonoNerd
-        fc-cache -fv
-        rm /tmp/JetBrainsMono.zip
-        echo "✅ Font installed! Please set your terminal font to 'JetBrainsMono Nerd Font'."
-    fi
+    echo "📦 Installing JetBrainsMono Nerd Font..."
+    mkdir -p ~/.local/share/fonts
+    wget -O /tmp/JetBrainsMono.zip https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+    unzip -o /tmp/JetBrainsMono.zip -d ~/.local/share/fonts/JetBrainsMonoNerd
+    fc-cache -fv
+    rm /tmp/JetBrainsMono.zip
+    echo "✅ Font installed! Please set your terminal font to 'JetBrainsMono Nerd Font'."
+else
+    echo "✅ JetBrainsMono Nerd Font is already installed."
 fi
 
 echo "✨ All tools installed successfully!"
