@@ -55,22 +55,37 @@ Manage your repository with `lazygit` or browse history with `fshow`.
 
 ## 🚀 Quick Start
 
+Get your modern terminal environment up and running in minutes.
+
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/SSK015/dotfiles.git ~/tools/dotfiles
+cd ~/tools/dotfiles
 ```
 
 ### 2. Install Modern Tools (Ubuntu/Debian)
-This script handles `fzf`, `eza`, `zoxide`, `lazygit`, `bat`, `ripgrep`, and more.
+This script automatically installs `fzf`, `eza`, `zoxide`, `lazygit`, `bat`, `ripgrep`, `dust`, `tldr`, and `JetBrainsMono Nerd Font`.
 ```bash
-cd ~/tools/dotfiles/tools
-./install_tools.sh
+bash ./tools/install_tools.sh
 ```
 
 ### 3. Deploy Zsh Configuration
+This will install **Oh My Zsh** (if not present) and link your `.zshrc`, `.alias`, and `.zfunctions`.
 ```bash
+# Install Oh My Zsh first (if you haven't)
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+# Deploy the configuration
 cd ~/tools/dotfiles/zsh
-./setupzsh.sh
+bash ./setupzsh.sh
+```
+
+### 4. Final Step: Switch to Zsh
+```bash
+# Change your default shell to zsh
+chsh -s $(which zsh)
+
+# Start a new session or run:
 source ~/.zshrc
 ```
 
@@ -78,8 +93,8 @@ source ~/.zshrc
 
 ## 🎨 Prerequisites
 To see the icons correctly, you **must** use a [Nerd Font](https://www.nerdfonts.com/).
-- **Recommended**: `JetBrainsMono Nerd Font`
-- **Installation**: Included as an option in `install_tools.sh`.
+- **Recommended**: `JetBrainsMono Nerd Font` (Installed automatically by `install_tools.sh`).
+- **Terminal Setup**: After installation, set your terminal font to `JetBrainsMono Nerd Font` in your terminal settings (e.g., VSCode, Windows Terminal, iTerm2).
 
 ---
 
