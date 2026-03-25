@@ -135,7 +135,7 @@ if [[ -o interactive ]] && command -v fzf >/dev/null 2>&1; then
     fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
         --bind "ctrl-m:execute:
                   (grep -o '[a-f0-9]\{7\}' | head -1 |
-                  xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+                  xargs -I % find -c 'git show --color=always % | less -R') << 'FZF-EOF'
                   {}
 FZF-EOF"
   }
@@ -170,6 +170,40 @@ FZF-EOF"
     local out
     out=$(alias | fzf "${_fzf_dropdown_ui[@]}")
     echo $(echo "$out" | cut -d= -f2-)
+  }
+
+  # 开启演示模式：隐藏个人信息
+  demo() {
+    # 备份原始 Prompt
+    export OLD_PROMPT="$PROMPT"
+    
+    # 修改 Prompt，将用户名改为 'user'，主机名改为 'host'
+    PROMPT=$'%B%F{18}#%f%b %B%F{23}user%f%b@%B%F{22}host%f%b %F{238}in%f %B%F{17}%~%f%b$(git_prompt_info) [%*] %(?,,%F{124}C:%?%f)\n%B%F{124}$%f%b '
+    
+    # 修改 eza/ls 别名，隐藏用户和组信息
+    if command -v eza >/dev/null 2>&1; then
+      alias ls="eza --icons --group-directories-first --no-user"
+      alias ll="eza -lbF --icons --group-directories-first --no-user"
+      alias la="eza -labF --icons --group-directories-first --no-user"
+    fi
+
+    # 临时屏蔽 neofetch 里的真实信息
+    if command -v neofetch >/dev/null 2>&1; then
+      alias neofetch="command neofetch | sed \"s/$USER/user/g; s/$(hostname)/host/g\""
+    fi
+
+    clear
+    echo "🛡️  Demo mode enabled. Personal info hidden."
+  }
+
+  # 退出演示模式
+  undemo() {
+    export PROMPT="$OLD_PROMPT"
+    # 恢复原始别名
+    source ~/.alias
+    unalias neofetch 2>/dev/null
+    clear
+    echo "🔓 Demo mode disabled."
   }
 fi
 

@@ -1,7 +1,7 @@
 # --- bat configuration ---
 
 # Set the theme to "Monokai Extended" (or choose another from 'bat --list-themes')
---theme="Monokai Extended"
+--theme="GitHub"
 
 # Show line numbers, Git modifications, and file header
 --style="numbers,changes,header"

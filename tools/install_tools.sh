@@ -5,6 +5,16 @@
 
 set -e
 
+# Function to backup existing files
+backup_if_exists() {
+    local file=$1
+    if [ -e "$file" ]; then
+        local backup="${file}.bak.$(date +%Y%m%d-%H%M%S)"
+        echo "⚠️  Existing $file found. Backing up to $backup"
+        mv "$file" "$backup"
+    fi
+}
+
 # Detect OS
 if [ -f /etc/os-release ]; then
     . /etc/os-release
@@ -119,7 +129,6 @@ fi
 # 11. Install tldr (Modern man)
 if ! command -v tldr >/dev/null 2>&1; then
     echo "📦 Installing tldr..."
-    # Using the python version as it's easy to install via pip or apt
     sudo apt install -y tldr || pip3 install tldr
 else
     echo "✅ tldr is already installed."
