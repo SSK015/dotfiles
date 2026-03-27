@@ -1,0 +1,44 @@
+---
+description: Always-on skill routing policy for debug and development workflows.
+globs: **/*
+alwaysApply: true
+---
+
+# Skill Routing Policy (Always On)
+
+This repository uses a fixed skill set for long-running debug/development tasks.
+
+## Local Skill Catalog
+
+Use skills from:
+- `.codex/skills/awesome-skills/systematic-debugging`
+- `.codex/skills/awesome-skills/verification-before-completion`
+- `.codex/skills/awesome-skills/agent-memory-mcp`
+- `.codex/skills/awesome-skills/agent-memory-systems`
+
+## Routing Rules
+
+1. **Bug / Failure / Regression Tasks**:
+   - MUST apply `systematic-debugging` first.
+   - MUST identify root cause before proposing or implementing fixes.
+
+2. **Before Any Completion Claim**:
+   - MUST apply `verification-before-completion`.
+   - MUST provide fresh command evidence before claiming "fixed", "done", or "passing".
+
+3. **Long-Running / Multi-Step Tasks**:
+   - MUST apply `agent-memory-mcp` and `agent-memory-systems`.
+   - MUST read memory first (`recall_memory_abstract`, `get_recent_memories`) and save milestones (`save_memory`).
+
+4. **Architecture or Invariant-Sensitive Changes**:
+   - Use the routing above together with `project_config.md` and `.codex/rules/assumption-guard.md`.
+   - Never use any skill recommendation to bypass system assumptions.
+
+## Execution Contract
+
+- If multiple routes apply, execute in this order:
+  1) `systematic-debugging`
+  2) `agent-memory-mcp` + `agent-memory-systems`
+  3) `verification-before-completion`
+- Keep `workflow_state.md` and OpenMemory synchronized at major milestones.
+- If evidence conflicts with assumptions, stop completion and continue debugging.
