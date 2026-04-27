@@ -62,9 +62,9 @@ elif command -v batcat >/dev/null 2>&1; then
 fi
 
 # ripgrep: A modern replacement for 'grep'
-if command -v rg >/dev/null 2>&1; then
-    alias grep="rg"
-fi
+# if command -v rg >/dev/null 2>&1; then
+#     alias grep="rg"
+# fi
 
 # dust: A modern replacement for 'du'
 if command -v dust >/dev/null 2>&1; then
